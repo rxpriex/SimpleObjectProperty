@@ -3,14 +3,13 @@
 
 #include <functional>
 #include <utility>
-#include <iostream>
-#include <set>
+#include <vector>
 
 template <typename objectType> class SimpleObjectProperty {
 public:
 	template<typename... Args>
 	SimpleObjectProperty(Args&&... args) :value(new objectType(std::forward<Args>(args)...)) {
-		listeners = new std::set<std::function(objectType&, objectType&)>();
+		listeners = new std::vector<std::function<void(objectType&, objectType&)>>();
 	}
 
 	~SimpleObjectProperty() {
@@ -19,11 +18,12 @@ public:
 		delete listeners;
 	}
 
-	virtual void setValue(objectType value);
+	virtual void addListener(std::function<void(objectType&, objectType&)> listener);
+
+	template<typename... Args>
+	void setValue(Args&&... args);
 
 	virtual objectType& getValue();
-
-	virtual void addListener(std::function<void(objectType&, objectType&)> listener);
 
 	void operator=(SimpleObjectProperty& other) {
 		setValue(other);
@@ -31,7 +31,9 @@ public:
 
 private:
 	objectType* value;
-	std::set<std::function<void(objectType&, objectType&)>()>* listeners;
+	std::vector<std::function<void(objectType&, objectType&)>>* listeners;
 };
+
+#include "SimpleObjectProperty.cpp"
 
 #endif // !SIMPLE_O_PROPERTY_H
