@@ -1,1 +1,1 @@
-A SimpleObjectProperty implemnted in cpp
+A SimpleObjectProperty implemented in cpp
